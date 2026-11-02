@@ -34,7 +34,7 @@ def new_bot():
     if not cfg.pair.endswith("_USDT"): raise ValueError("Choose a CoinDCX Futures contract such as B-BTC_USDT. The bot submits it with INR margin.")
     client=CoinDCXClient(ApiCredentials.from_environment()) if mode is TradingMode.LIVE else CoinDCXClient()
     inst=MarketDataService(client).validate_inr_instrument(cfg.pair,cfg.leverage)
-    return BotService(cfg,prices=PriceService(cfg,client.last_price,feed=feed),journal=Journal(),instrument=inst,client=client)
+    return BotService(cfg,prices=PriceService(cfg,client.last_price),journal=Journal(),instrument=inst,client=client)
 def run():
     st.set_page_config(page_title="CoinDCX Martingale Bot",layout="wide"); st.title("CoinDCX Futures Martingale Bot")
     st.caption(f"LAN dashboard: http://{ipv4()}:8501  ·  CoinDCX API whitelist IP: {public_ipv4()}  ·  Local: http://127.0.0.1:8501")
