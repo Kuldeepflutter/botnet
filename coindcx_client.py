@@ -245,12 +245,15 @@ class CoinDCXClient:
         return [row for row in self.list_orders(status="open,partially_filled") if row.get("pair") == pair]
 
     def available_margin(self) -> Decimal:
-        """Free INR Futures wallet balance; never substitutes a spot balance."""
+        """Free INR Futures wallet balance; CoinDCX's ``balance`` is already the available amount.
+
+        ``locked_balance`` is reported separately and must not be subtracted again.
+        """
         wallets = self.futures_wallets()
         row = next((x for x in wallets if x.get("currency_short_name") == "INR"), None)
         if row is None:
             raise CoinDCXError("No INR Futures wallet was returned for this API key.")
-        return Decimal(str(row.get("balance", 0))) - Decimal(str(row.get("locked_balance", 0)))
+        return Decimal(str(row.get("balance", 0)))
 
     def conversion_rate(self) -> Decimal:
         """Return INR per USDT, preferring the legacy Futures conversion API.
